@@ -1,0 +1,28 @@
+syntax = "proto3";
+package com.shopee.shopeetracker.proto;
+
+message ShardDataMessage {
+  int32 app_id = 1;
+  string app_version = 2;
+  string client_id = 3;
+  string country = 4;
+  string platform = 5;
+  string trigger_source = 6;
+  string deviceid = 7;
+  string device_fingerprint = 8;
+  int64 userid = 9;
+  int64 event_timestamp = 10;
+  string task_id = 11;
+  int32 shard_id = 12;
+  bytes shard_data = 13;    // AES(GZIP(vector))
+  int32 shard_count = 14;
+  string extra_info = 15;
+  bytes encrypted_key = 16; // RSA(key)
+  DataType data_type = 17;
+  string iv = 18;
+}
+
+enum DataType {
+  UNKNOWN = 0;
+  IMAGE_VECTOR = 1;
+}

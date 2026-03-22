@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+package streaming_asr_gateway;
+import "google/protobuf/struct.proto";
+option go_package = "git.garena.com/shopee/ai-engineering/audioai/protocol/gen/go/streaming_asr_gateway";
+
+message ReqHeader {
+    string cmd = 1; // start, bin_frame, end
+    string sid = 2; // format: sid-{app_key}-{region}-{unique_id}
+    string request_id = 3; // unique id for each request, {sid}_{unique_id}
+    int64 timestamp = 4; // timestamp in ms
+}
+
+message RspHeader {
+    string event = 1; // config, result
+    string sid = 2; // same as req header
+    string request_id = 3; // unique id for each request, {sid}_{unique_id}
+    int32 code = 4; // 0: success, else: error
+    string msg = 5; // error message
+}
+
+message StartParams {
+    string language = 1; // language code, e.g. en-US, zh-CN
+    string format = 2; // wav, aac
+    int32 channels = 3; // 0, 1, 2
+    string result_type = 4; // all, increment
+    string config_version = 5; // version for current config
+}
+
+message BinFrameParams {
+    int32 frame_index = 1; // frame index
+    int32 frame_duration = 2; // frame duration in ms
+    bool segment_end = 3; // true if this is the last frame of the segment(when sdk's voice active detected model's output from active to inactive)
+    int32 frame_real_duration_offset = 4; // frame real duration offset in ms(when sdk use voice active detected model, this is required)
+    bool voice_active_detected = 5; // true if run sdk side vad model
+    bool active = 6; // true if voice active
+    string stream = 7; // stream name
+    optional Timestamps timestamps = 8; // timestamps, sdk side ignore this field
+}
+
+message EndParams {
+    bool cancel = 1; // true if cancel the request
+}
+
+message MetaData {
+    bool support_speaker_detection = 1; // true if support speaker detection
+    bool support_multi_channel = 2; // true if support multi channel
+    repeated string support_language = 3; // supported languages
+    repeated string support_result_type = 4; // supported result types
+    repeated string support_format = 5; // supported formats
+    repeated int32 support_sample_rate = 6; // supported sample rates
+    repeated string support_locations = 7; // supported locations
+    repeated int32 support_bits_per_sample = 8; // supported bits per sample
+}
+
+message VADParams {
+    float threshold = 1; // voice active threshold, default 0.5
+    float neg_threshold = 2; // voice inactive threshold, default 0.35
+    int32 min_speech_duration = 3; // min speech duration in ms, default 256
+    int32 max_speech_duration = 4; // max speech duration in ms, default 29952
+    int32 min_silence_duration = 5; // min silence duration in ms, default 960
+    int32 speech_pad = 6; // speech pad in ms, default 256
+    int32 speech_pad_end = 7; // for 3.64 new vad, default 256
+}
+
+message AppConfig {
+    map<string, string> default_language_mapping = 1; // default language mapping
+    int32 frame_duration = 2; // frame duration in ms
+    VADParams vad_params = 3; // vad params
+    int32 max_input_duration = 4; // max input duration in ms, 60000
+    int32 end_speech_duration = 5; // end speech duration in ms, 3000
+    int32 close_timeout = 6; // after send end command, wait finished before close, wait timeout, voice_search: 3000
+    string config_version = 7; // config version, example: v1217_480msd_250pad
+}
+
+message ConfigParams {
+    MetaData meta_data = 1;
+    AppConfig app_config = 2;
+}
+
+message Word {
+    int32 begintime = 1; // begin offset of a word in ms
+    int32 endtime = 2; // end offset of a word in ms
+    string word = 3; // word
+}
+
+message Segment {
+    int32 status = 1; // segment status, 0: completed, 1: temporary
+    int32 index = 2;
+    int32 begintime = 3; // begin offset of a segment in ms
+    int32 endtime = 4; // end offset of a segment in ms
+    string text = 5; // segment text
+    string language = 6; // segment language
+    string stream = 7; // segment stream
+    float confidence = 8; // segment confidence
+    repeated Word words = 9; // words in a segment
+    map<string, google.protobuf.Value> labels = 10; // labels in a result
+}
+
+message ASRResult {
+    string text = 1; // asr result text
+    repeated Segment segments = 2; // segments in a result
+    map<string, google.protobuf.Value> labels = 3; // labels in a result
+}
+
+message Timestamps {
+    map<string, int64> timestamps = 1; // timestamps
+}
+
+message Latency {
+    map<string, float> latencies = 1;
+}
+
+message AdditionInfo {
+   Latency latencies  = 1;
+   int32 segment_start = 2;
+   int32 segment_end = 3;
+   int32 duration = 4;
+   int32 current_offset = 5;
+   int32 buffered_chunk = 6;
+   Timestamps timestamps = 7; // timestamps
+}
+
+message ResultParams {
+    bool finished = 1; // true if the request is finished
+    int32 completed_frame_index = 2; // the last completed asr model transcribed frame index
+    ASRResult result = 3; // asr result
+    repeated int32 received_frame_indexs = 4; // received bin-frame indexs
+    bool voice_active = 5; // service side vad detected voice active status
+    optional AdditionInfo addition_info = 6; // addition info, sdk side ignore this field
+}
+
+// ================================
+
+message Command {
+    ReqHeader header = 1;
+    oneof params {
+        StartParams start_params = 2;
+        BinFrameParams bin_frame_params = 3;
+        EndParams end_params = 4;
+    }
+    bytes data = 5; // ony for bin_frame command audio data
+}
+
+message Event {
+    RspHeader header = 1;
+    oneof params {
+        ConfigParams config_params = 2;
+        ResultParams result_params = 3;
+    }
+}
