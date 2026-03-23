@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🐉 Emoji Variables – Printed Output</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f0f23, #1a0033);
+      color: #f0f0ff;
+      padding: 40px;
+      line-height: 1.7;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #ff4d94;
+      text-shadow: 0 0 10px rgba(255, 77, 148, 0.6);
+    }
+    .card {
+      background: rgba(20, 20, 50, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(100, 100, 255, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .output {
+      font-family: 'Courier New', monospace;
+      background: #0a0a1f;
+      color: #00ff9d;
+      padding: 16px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      border-left: 5px solid #00ff9d;
+      margin: 16px 0;
+    }
+    .label {
+      color: #ffcc00;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🐉🔥💯 Emoji Variables – See Output Printed on Page</h1>
+
+<p>Everything is printed directly below — no console needed!</p>
+
+<div class="card">
+  <h2>Live Results 🐉</h2>
+
+  <div class="output" id="output1">Loading dragon energy...</div>
+  <div class="output" id="output2">Loading fire level...</div>
+  <div class="output" id="output3">Loading certified status...</div>
+  <div class="output" id="output4">Loading final message...</div>
+</div>
+
+<script>
+// === The fun emoji variable code ===
+
+let 🐉 = "dragon king";
+let 🔥 = 9999;
+const 💯 = true;
+let 🍎 = "forbidden apple";
+let 🐍 = "shadow serpent";
+
+let epicMessage = 
+  `✨ ${🐉} awakens with ${🔥} power!\n` +
+  `Certified ${💯 ? "💯 real" : "fake news"} energy\n` +
+  `Currently devouring ${🍎} while ${🐍} watches...`;
+
+
+// Print / display everything on the page
+document.getElementById("output1").innerHTML = 
+  `<span class="label">🐉 =</span> "${🐉}"`;
+
+document.getElementById("output2").innerHTML = 
+  `<span class="label">🔥 =</span> ${🔥}`;
+
+document.getElementById("output3").innerHTML = 
+  `<span class="label">💯 =</span> ${💯 ? "true 🔥" : "false 😴"}`;
+
+document.getElementById("output4").innerHTML = 
+  `<span class="label">Epic story:</span><br>${epicMessage.replace(/\n/g, '<br>')}`;
+
+// Bonus: console still gets it too (for debugging)
+console.log("🐉🔥 Output printed on page:");
+console.log(epicMessage);
+</script>
+
+<p style="margin-top: 40px; opacity: 0.8; font-size: 0.95em;">
+  Works great in modern browsers (Chrome, Edge, Firefox, Safari 2025+).<br>
+  Feel free to change the values of 🐉 🔥 🍎 etc. and refresh!
+</p>
+
+</body>
+</html>
