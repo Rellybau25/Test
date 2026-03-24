@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emoji Variables Demo 🐉</title>
+    <style>
+        body {
+            background: #111;
+            color: #0f0;
+            font-family: monospace;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .box {
+            background: #000;
+            border-left: 5px solid #0f0;
+            margin: 15px auto;
+            padding: 15px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #0f0;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐉 Emoji Variables Demo</h1>
+
+    <div id="output"></div>
+
+    <button onclick="run()">Run 🧪</button>
+
+    <script>
+        function run() {
+            let 🐉 = "Dragon energy loading...";
+            let 🔥 = "Fire level rising...";
+            let 🍎 = "Apple spawned!";
+            let 💯 = "System ready!";
+
+            let 📦 = document.getElementById("output");
+            📦.innerHTML = "";
+
+            let 🧱 = [🐉, 🔥, 🍎, 💯];
+
+            🧱.forEach(msg => {
+                let 📄 = document.createElement("div");
+                📄.className = "box";
+                📄.textContent = msg;
+                📦.appendChild(📄);
+            });
+        }
+    </script>
+
+</body>
+</html>
